@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from utils import read_excel_file, filter_dataframe, generate_download_link
+from utils import read_excel_file, filter_dataframe, generate_download_link, group_by_depot
 
 def main():
     # Page configuration
@@ -76,13 +76,26 @@ def main():
                 row_range[1]
             )
 
+            # Grouping options
+            st.subheader("Data Grouping")
+            show_depot_grouping = st.checkbox("Group by Depot", value=False)
+            
             # Preview section
             st.subheader("Data Preview")
             st.markdown('<div class="data-preview">', unsafe_allow_html=True)
-            st.dataframe(
-                filtered_df.head(10),
-                use_container_width=True
-            )
+            
+            if show_depot_grouping:
+                try:
+                    grouped_df = group_by_depot(filtered_df)
+                    st.dataframe(grouped_df, use_container_width=True)
+                    # Update filtered_df for download
+                    filtered_df = grouped_df
+                except ValueError as e:
+                    st.error(str(e))
+                    st.dataframe(filtered_df.head(10), use_container_width=True)
+            else:
+                st.dataframe(filtered_df.head(10), use_container_width=True)
+            
             st.markdown('</div>', unsafe_allow_html=True)
 
             # Download section

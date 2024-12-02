@@ -24,6 +24,20 @@ def filter_dataframe(
         return df.iloc[start_row:end_row+1]
     return df.loc[start_row:end_row, selected_columns]
 
+def group_by_depot(df: pd.DataFrame) -> pd.DataFrame:
+    """Group data by Depot column and calculate aggregates."""
+    if 'Depot' not in df.columns:
+        raise ValueError("Depot column not found in the dataset")
+    
+    grouped = df.groupby('Depot').agg({
+        'Route': 'count',
+        'Mileage': 'sum',
+        'Time': 'sum'
+    }).reset_index()
+    
+    grouped.columns = ['Depot', 'Total Routes', 'Total Mileage', 'Total Time']
+    return grouped
+
 def generate_download_link(df: pd.DataFrame, file_format: str) -> Tuple[bytes, str]:
     """Generate downloadable file in specified format."""
     if file_format == "csv":
