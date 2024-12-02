@@ -1,0 +1,24 @@
+.upload-section {
+    padding: 2rem;
+    border-radius: 0.5rem;
+    border: 2px dashed #007bff;
+    margin-bottom: 2rem;
+}
+
+.instructions {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.stButton>button {
+    width: 100%;
+}
+
+.data-preview {
+    margin-top: 2rem;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+}
