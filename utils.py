@@ -18,7 +18,7 @@ def group_by_depot(df: pd.DataFrame) -> pd.DataFrame:
     if 'Depot' not in df.columns:
         raise ValueError("Depot column not found in the dataset")
     
-    required_cols = ['DeliveryCases', 'DeliveryHours', 'OnTimePct']
+    required_cols = ['DeliveryCases', 'TotalTime', 'OnTimePct']
     missing_cols = [col for col in required_cols if col not in df.columns]
     if missing_cols:
         raise ValueError(f"Missing required columns: {', '.join(missing_cols)}")
@@ -26,7 +26,7 @@ def group_by_depot(df: pd.DataFrame) -> pd.DataFrame:
     grouped = df.groupby('Depot').agg({
         'DeliveryCases': 'sum',  # Delivery Cases
         'Depot': 'count',        # Routes
-        'DeliveryHours': 'sum',  # Delivery Hours
+        'TotalTime': 'sum',      # Delivery Hours
         'OnTimePct': 'mean'      # On-Time %
     }).reset_index()
     
