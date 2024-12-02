@@ -29,14 +29,30 @@ def group_by_depot(df: pd.DataFrame) -> pd.DataFrame:
     if 'Depot' not in df.columns:
         raise ValueError("Depot column not found in the dataset")
     
-    grouped = df.groupby('Depot').agg({
-        'Route': 'count',
-        'Mileage': 'sum',
-        'Time': 'sum'
-    }).reset_index()
+    # Dynamically find numeric columns for aggregation
+    numeric_cols = df.select_dtypes(include=[np.number]).columns
+    agg_dict = {col: 'sum' for col in numeric_cols}
     
-    grouped.columns = ['Depot', 'Total Routes', 'Total Mileage', 'Total Time']
+    # Add count of rows per depot
+    agg_dict[df.columns[0]] = 'count'
+    
+    grouped = df.groupby('Depot').agg(agg_dict).reset_index()
+    
+    # Rename columns to be more descriptive
+    new_cols = {'Depot': 'Depot'}
+    for col in grouped.columns:
+        if col != 'Depot':
+            if grouped[col].dtype in [np.int64, np.float64]:
+                new_cols[col] = f'Total {col}'
+    
+    grouped.rename(columns=new_cols, inplace=True)
     return grouped
+
+def pivot_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    """Transpose the dataframe and reset index."""
+    pivoted_df = df.transpose().reset_index()
+    pivoted_df.columns = ['Field'] + [f'Value_{i+1}' for i in range(len(pivoted_df.columns)-1)]
+    return pivoted_df
 
 def generate_download_link(df: pd.DataFrame, file_format: str) -> Tuple[bytes, str]:
     """Generate downloadable file in specified format."""
