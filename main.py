@@ -34,6 +34,11 @@ def main():
     st.markdown('</div>', unsafe_allow_html=True)
 
     if uploaded_file is not None:
+        # Validate file name
+        if uploaded_file.name != "qryRouteSummary.xlsx":
+            st.error("Please upload a file named 'qryRouteSummary.xlsx'")
+            return
+
         # Read the Excel file
         df, message = read_excel_file(uploaded_file)
         
