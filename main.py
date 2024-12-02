@@ -80,56 +80,29 @@ def main():
             st.subheader("Data Preview")
             st.markdown('<div class="data-preview">', unsafe_allow_html=True)
             
-            display_df = filtered_df.copy()
-            
             try:
-                # Apply transformations and calculate metrics
-                metrics_df = group_by_depot(display_df)
-                
-                # Add filters section
-                st.subheader("Metrics Filters")
-                col1, col2, col3 = st.columns(3)
-                
-                with col1:
-                    min_routes = st.number_input("Minimum Routes", value=0)
-                    min_hours = st.number_input("Minimum Total Hours", value=0.0)
-                
-                with col2:
-                    max_cost_per_hour = st.number_input("Maximum Cost per Hour", value=float(metrics_df['Cost_Per_Hour'].max()))
-                    min_distance = st.number_input("Minimum Total Distance", value=0.0)
-                
-                with col3:
-                    max_cost_per_route = st.number_input("Maximum Cost per Route", value=float(metrics_df['Cost_Per_Route'].max()))
-                
-                # Apply filters
-                filters = {
-                    'Route_Count': {'min': min_routes},
-                    'Total_Hours': {'min': min_hours},
-                    'Cost_Per_Hour': {'max': max_cost_per_hour},
-                    'Total_Distance': {'min': min_distance},
-                    'Cost_Per_Route': {'max': max_cost_per_route}
-                }
-                
-                filtered_metrics = filter_metrics(metrics_df, filters)
+                # Calculate and display metrics
+                metrics_df = group_by_depot(filtered_df)
                 
                 # Display metrics
-                st.markdown("### Filtered Metrics")
-                st.dataframe(filtered_metrics, use_container_width=True)
-                
-                # Update filtered_df for download
-                filtered_df = filtered_metrics
+                st.markdown("### Depot Metrics")
+                st.dataframe(metrics_df, use_container_width=True)
                 
                 # Display summary statistics
                 st.markdown("### Summary Statistics")
                 summary_cols = st.columns(4)
                 with summary_cols[0]:
-                    st.metric("Total Routes", int(filtered_metrics['Route_Count'].sum()))
+                    st.metric("Total Routes", int(metrics_df['Routes'].sum()))
                 with summary_cols[1]:
-                    st.metric("Total Hours", f"{filtered_metrics['Total_Hours'].sum():.2f}")
+                    st.metric("Total Delivery Cases", int(metrics_df['Delivery_Cases'].sum()))
                 with summary_cols[2]:
-                    st.metric("Total Cost", f"${filtered_metrics['Total_Cost'].sum():.2f}")
-                with summary_cols[3]:
-                    st.metric("Total Distance", f"{filtered_metrics['Total_Distance'].sum():.2f} mi")
+                    st.metric("Average On-Time %", f"{metrics_df['On_Time_Pct'].mean():.0f}%")
+                if 'Delivery_Hours' in metrics_df.columns:
+                    with summary_cols[3]:
+                        st.metric("Total Delivery Hours", f"{metrics_df['Delivery_Hours'].sum():.2f}")
+                
+                # Update filtered_df for download
+                filtered_df = metrics_df
                 
             except ValueError as e:
                 st.error(str(e))
