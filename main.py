@@ -81,9 +81,9 @@ def main():
             col1, col2 = st.columns(2)
             
             with col1:
-                show_depot_grouping = st.checkbox("Group by Depot", value=False)
+                show_depot_grouping = st.checkbox("Group by Depot", value=True)
             with col2:
-                show_pivot = st.checkbox("Pivot Data", value=False)
+                show_pivot = st.checkbox("Pivot Data", value=True)
             
             # Preview section
             st.subheader("Data Preview")
