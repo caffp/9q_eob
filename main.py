@@ -76,15 +76,6 @@ def main():
                 row_range[1]
             )
 
-            # Data Transformation Options
-            st.subheader("Data Transformations")
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                show_depot_grouping = st.checkbox("Group by Depot", value=True)
-            with col2:
-                show_pivot = st.checkbox("Pivot Data", value=True)
-            
             # Preview section
             st.subheader("Data Preview")
             st.markdown('<div class="data-preview">', unsafe_allow_html=True)
@@ -92,11 +83,9 @@ def main():
             display_df = filtered_df.copy()
             
             try:
-                if show_depot_grouping:
-                    display_df = group_by_depot(display_df)
-                
-                if show_pivot:
-                    display_df = pivot_dataframe(display_df)
+                # Apply transformations by default
+                display_df = group_by_depot(display_df)
+                display_df = pivot_dataframe(display_df)
                 
                 st.dataframe(display_df, use_container_width=True)
                 # Update filtered_df for download
