@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from utils import read_excel_file, filter_dataframe, generate_download_link, group_by_depot, pivot_dataframe
+from utils import read_excel_file, generate_download_link, group_by_depot, pivot_dataframe
 
 def main():
     # Page configuration
@@ -20,9 +20,8 @@ def main():
     <div class="instructions">
         <h4>Instructions:</h4>
         <ol>
-            <li>Upload your Excel file using the upload section below</li>
-            <li>Preview your data and select the columns you want to keep</li>
-            <li>Specify the row range to include</li>
+            <li>Upload your qryRouteSummary.xlsx file</li>
+            <li>View the processed metrics by depot</li>
             <li>Download the processed data in your preferred format</li>
         </ol>
     </div>
@@ -30,7 +29,7 @@ def main():
 
     # File upload section
     st.markdown('<div class="upload-section">', unsafe_allow_html=True)
-    uploaded_file = st.file_uploader("Choose an Excel file", type=['xlsx', 'xls'])
+    uploaded_file = st.file_uploader("Choose an Excel file", type=['xlsx'])
     st.markdown('</div>', unsafe_allow_html=True)
 
     if uploaded_file is not None:
@@ -45,99 +44,61 @@ def main():
         if df is not None:
             # Display file info
             st.success(f"File uploaded successfully: {uploaded_file.name}")
-            st.info(f"Total rows: {len(df)}, Total columns: {len(df.columns)}")
-
-            # Column selection
-            col1, col2 = st.columns(2)
-            with col1:
-                st.subheader("Column Selection")
-                all_columns = df.columns.tolist()
-                selected_columns = st.multiselect(
-                    "Select columns to include",
-                    options=all_columns,
-                    default=all_columns
-                )
-
-            # Row range selection
-            with col2:
-                st.subheader("Row Range")
-                row_range = st.slider(
-                    "Select row range",
-                    0, len(df)-1,
-                    (0, min(len(df)-1, 100)),
-                    step=1
-                )
-
-            # Filter data
-            filtered_df = filter_dataframe(
-                df,
-                selected_columns,
-                row_range[0],
-                row_range[1]
-            )
-
-            # Preview section
-            st.subheader("Data Preview")
-            st.markdown('<div class="data-preview">', unsafe_allow_html=True)
             
             try:
-                # Calculate and display metrics
-                metrics_df = group_by_depot(filtered_df)
+                # First group the data
+                grouped_df = group_by_depot(df)
+                
+                # Then pivot the grouped data
+                final_df = pivot_dataframe(grouped_df)
                 
                 # Display metrics
-                st.markdown("### Depot Metrics")
-                st.dataframe(metrics_df, use_container_width=True)
+                st.markdown("### Metrics by Depot")
+                st.dataframe(final_df, use_container_width=True)
                 
                 # Display summary statistics
                 st.markdown("### Summary Statistics")
                 summary_cols = st.columns(4)
                 with summary_cols[0]:
-                    st.metric("Total Routes", int(metrics_df['Routes'].sum()))
+                    st.metric("Total Routes", int(grouped_df['Routes'].sum()))
                 with summary_cols[1]:
-                    st.metric("Total Delivery Cases", int(metrics_df['Delivery_Cases'].sum()))
+                    st.metric("Total Delivery Cases", int(grouped_df['Delivery_Cases'].sum()))
                 with summary_cols[2]:
-                    st.metric("Average On-Time %", f"{metrics_df['On_Time_Pct'].mean():.0f}%")
-                if 'Delivery_Hours' in metrics_df.columns:
-                    with summary_cols[3]:
-                        st.metric("Total Delivery Hours", f"{metrics_df['Delivery_Hours'].sum():.2f}")
+                    st.metric("Average On-Time %", f"{grouped_df['On_Time_Pct'].mean():.0f}%")
+                with summary_cols[3]:
+                    st.metric("Total Delivery Hours", f"{grouped_df['Delivery_Hours'].sum():.2f}")
                 
-                # Update filtered_df for download
-                filtered_df = metrics_df
+                # Download section
+                st.subheader("Download Processed Data")
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    file_format = st.selectbox(
+                        "Select output format",
+                        options=["csv", "excel"],
+                        index=0
+                    )
+
+                with col2:
+                    if st.button("Download Processed Data"):
+                        try:
+                            # Use the pivoted data for download
+                            file_content, mime_type = generate_download_link(
+                                final_df,
+                                file_format
+                            )
+                            
+                            st.download_button(
+                                label="Click to Download",
+                                data=file_content,
+                                file_name=f"processed_data.{file_format}",
+                                mime=mime_type
+                            )
+                        except Exception as e:
+                            st.error(f"Error generating download: {str(e)}")
                 
             except ValueError as e:
                 st.error(str(e))
-                st.dataframe(filtered_df.head(10), use_container_width=True)
-            
-            st.markdown('</div>', unsafe_allow_html=True)
-
-            # Download section
-            st.subheader("Download Processed Data")
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                file_format = st.selectbox(
-                    "Select output format",
-                    options=["csv", "excel"],
-                    index=0
-                )
-
-            with col2:
-                if st.button("Download Processed Data"):
-                    try:
-                        file_content, mime_type = generate_download_link(
-                            filtered_df,
-                            file_format
-                        )
-                        
-                        st.download_button(
-                            label="Click to Download",
-                            data=file_content,
-                            file_name=f"processed_data.{file_format}",
-                            mime=mime_type
-                        )
-                    except Exception as e:
-                        st.error(f"Error generating download: {str(e)}")
-
         else:
             st.error(message)
 
