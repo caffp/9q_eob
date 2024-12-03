@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from datetime import datetime
 from utils import read_excel_file, generate_download_link, group_by_depot, pivot_dataframe
 
 def main():
@@ -92,10 +93,12 @@ def main():
                                 file_format
                             )
                             
+                            # Generate filename with current date
+                            current_date = datetime.now().strftime("%Y-%m-%d")
                             st.download_button(
                                 label="Click to Download",
                                 data=file_content,
-                                file_name=f"processed_data.{file_format}",
+                                file_name=f"UMOS_Data_{current_date}.{file_format}",
                                 mime=mime_type
                             )
                         except Exception as e:

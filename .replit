@@ -31,6 +31,8 @@ args = "streamlit run main.py --server.port 5000"
 waitForPort = 5000
 
 [deployment]
+deploymentTarget = "static"
+publicDir = "umos"
 run = ["sh", "-c", "streamlit run main.py --server.port 5000"]
 
 [[ports]]
