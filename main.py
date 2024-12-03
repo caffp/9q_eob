@@ -55,7 +55,9 @@ def main():
                 # Display metrics
                 st.markdown("### Metrics by Depot")
                 # Format Delivery_Cases as integers
-                final_df.loc[final_df['Metric'] == 'Delivery_Cases'] = final_df.loc[final_df['Metric'] == 'Delivery_Cases'].astype(int)
+                for col in final_df.columns:
+                    if col != 'Metric':  # Skip the Metric column
+                        final_df.loc[final_df['Metric'] == 'Delivery_Cases', col] = final_df.loc[final_df['Metric'] == 'Delivery_Cases', col].astype(int)
                 st.dataframe(final_df, use_container_width=True)
                 
                 # Display summary statistics
