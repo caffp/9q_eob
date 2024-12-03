@@ -30,7 +30,7 @@ def group_by_depot(df: pd.DataFrame) -> pd.DataFrame:
     }).reset_index()
     
     # Flatten multi-level columns
-    grouped.columns = ['Depot', 'Delivery_Cases', 'Routes', 'Delivery_Hours', 'On_Time_Pct']
+    grouped.columns = ['Depot', 'Delivery Cases', 'Routes', 'Delivery Hours', 'On-time %']
     
     # Convert Delivery Hours to integer
     grouped['Delivery_Hours'] = grouped['Delivery_Hours'].astype(int)

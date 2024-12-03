@@ -57,7 +57,7 @@ def main():
                 # Format Delivery_Cases as integers
                 for col in final_df.columns:
                     if col != 'Metric':  # Skip the Metric column
-                        final_df.loc[final_df['Metric'] == 'Delivery_Cases', col] = final_df.loc[final_df['Metric'] == 'Delivery_Cases', col].astype(int)
+                        final_df.loc[final_df['Metric'] == 'Delivery Cases', col] = final_df.loc[final_df['Metric'] == 'Delivery Cases', col].astype(int)
                 st.dataframe(final_df, use_container_width=True)
                 
                 # Display summary statistics
@@ -66,11 +66,11 @@ def main():
                 with summary_cols[0]:
                     st.metric("Total Routes", int(grouped_df['Routes'].sum()))
                 with summary_cols[1]:
-                    st.metric("Total Delivery Cases", f"{int(grouped_df['Delivery_Cases'].sum())}")
+                    st.metric("Total Delivery Cases", f"{int(grouped_df['Delivery Cases'].sum())}")
                 with summary_cols[2]:
-                    st.metric("Average On-Time %", f"{round(grouped_df['On_Time_Pct'].mean())}%")
+                    st.metric("Average On-Time %", f"{round(grouped_df['On-time %'].mean())}%")
                 with summary_cols[3]:
-                    st.metric("Total Delivery Hours", f"{grouped_df['Delivery_Hours'].sum():.2f}")
+                    st.metric("Total Delivery Hours", f"{grouped_df['Delivery Hours'].sum():.2f}")
                 
                 # Download section
                 st.subheader("Download Processed Data")
