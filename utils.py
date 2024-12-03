@@ -33,10 +33,10 @@ def group_by_depot(df: pd.DataFrame) -> pd.DataFrame:
     grouped.columns = ['Depot', 'Delivery Cases', 'Routes', 'Delivery Hours', 'On-time %']
     
     # Convert Delivery Hours to integer
-    grouped['Delivery_Hours'] = grouped['Delivery_Hours'].astype(int)
+    grouped['Delivery Hours'] = grouped['Delivery Hours'].astype(int)
     
-    # Convert On_Time_Pct to whole percentage
-    grouped['On_Time_Pct'] = (grouped['On_Time_Pct'] * 100).round()
+    # Convert On-time percentage to whole percentage
+    grouped['On-time %'] = (grouped['On-time %'] * 100).round()
     
     return grouped
 
