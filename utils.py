@@ -3,6 +3,10 @@ import numpy as np
 import io
 from typing import Tuple, Optional
 
+DEPOT_ORDER = [
+    'D9Q00001', 'D9Q00002', 'D9Q00003', 'D9Q00004', 'D9Q00005', 'D9Q00006',
+    'D9Q00007', 'D9Q00017', 'D9Q00030', 'D9Q00040', 'D9Q00041', 'D9Q00043'
+]
 def read_excel_file(file) -> Tuple[Optional[pd.DataFrame], str]:
     """Read Excel file and return DataFrame with error handling."""
     try:
@@ -42,12 +46,21 @@ def group_by_depot(df: pd.DataFrame) -> pd.DataFrame:
 
 def pivot_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     """Transform the dataframe to show metrics as rows and depots as columns."""
-    # Set Depot as columns
-    pivot_df = df.set_index('Depot').transpose()
+    # Create empty DataFrame with all depots
+    all_depots_df = pd.DataFrame({'Depot': DEPOT_ORDER})
+    
+    # Merge with actual data, keeping all depots
+    merged_df = pd.merge(all_depots_df, df, on='Depot', how='left')
+    
+    # Fill missing values with 0
+    merged_df = merged_df.fillna(0)
+    
+    # Set Depot as columns in specified order
+    pivot_df = merged_df.set_index('Depot').transpose()
     
     # Reset index to make metrics names as a column
     pivot_df = pivot_df.reset_index()
-    pivot_df.columns = ['Metric'] + list(pivot_df.columns[1:])
+    pivot_df.columns = ['Metric'] + DEPOT_ORDER
     
     return pivot_df
 
