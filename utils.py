@@ -32,8 +32,8 @@ def group_by_depot(df: pd.DataFrame) -> pd.DataFrame:
     # Flatten multi-level columns
     grouped.columns = ['Depot', 'Delivery_Cases', 'Routes', 'Delivery_Hours', 'On_Time_Pct']
     
-    # Round On-Time percentage to nearest integer
-    grouped['On_Time_Pct'] = grouped['On_Time_Pct'].round().astype(int)
+    # Convert Delivery Hours to integer
+    grouped['Delivery_Hours'] = grouped['Delivery_Hours'].astype(int)
     
     return grouped
 
