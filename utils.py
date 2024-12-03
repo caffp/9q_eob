@@ -35,6 +35,9 @@ def group_by_depot(df: pd.DataFrame) -> pd.DataFrame:
     # Convert Delivery Hours to integer
     grouped['Delivery_Hours'] = grouped['Delivery_Hours'].astype(int)
     
+    # Convert On_Time_Pct to percentage with 2 decimal places
+    grouped['On_Time_Pct'] = (grouped['On_Time_Pct'] * 100).round(2)
+    
     return grouped
 
 def pivot_dataframe(df: pd.DataFrame) -> pd.DataFrame:

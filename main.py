@@ -64,7 +64,7 @@ def main():
                 with summary_cols[1]:
                     st.metric("Total Delivery Cases", int(grouped_df['Delivery_Cases'].sum()))
                 with summary_cols[2]:
-                    st.metric("Average On-Time %", f"{grouped_df['On_Time_Pct'].mean():.0f}%")
+                    st.metric("Average On-Time %", f"{grouped_df['On_Time_Pct'].mean():.2f}%")
                 with summary_cols[3]:
                     st.metric("Total Delivery Hours", f"{grouped_df['Delivery_Hours'].sum():.2f}")
                 
