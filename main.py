@@ -54,6 +54,8 @@ def main():
                 
                 # Display metrics
                 st.markdown("### Metrics by Depot")
+                # Format Delivery_Cases as integers
+                final_df.loc[final_df['Metric'] == 'Delivery_Cases'] = final_df.loc[final_df['Metric'] == 'Delivery_Cases'].astype(int)
                 st.dataframe(final_df, use_container_width=True)
                 
                 # Display summary statistics
@@ -62,7 +64,7 @@ def main():
                 with summary_cols[0]:
                     st.metric("Total Routes", int(grouped_df['Routes'].sum()))
                 with summary_cols[1]:
-                    st.metric("Total Delivery Cases", int(grouped_df['Delivery_Cases'].sum()))
+                    st.metric("Total Delivery Cases", f"{int(grouped_df['Delivery_Cases'].sum())}")
                 with summary_cols[2]:
                     st.metric("Average On-Time %", f"{round(grouped_df['On_Time_Pct'].mean())}%")
                 with summary_cols[3]:
