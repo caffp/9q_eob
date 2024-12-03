@@ -7,6 +7,21 @@ DEPOT_ORDER = [
     'D9Q00001', 'D9Q00002', 'D9Q00003', 'D9Q00004', 'D9Q00005', 'D9Q00006',
     'D9Q00007', 'D9Q00017', 'D9Q00030', 'D9Q00040', 'D9Q00041', 'D9Q00043'
 ]
+
+DEPOT_NAMES = {
+    'D9Q00001': 'Spokane',
+    'D9Q00002': 'Pasco',
+    'D9Q00003': 'Kalispell',
+    'D9Q00004': 'Moses Lake',
+    'D9Q00005': 'Missoula',
+    'D9Q00006': 'Lewiston',
+    'D9Q00007': 'Malott',
+    'D9Q00017': 'Walla Walla',
+    'D9Q00030': 'Sandpoint',
+    'D9Q00040': 'Yakima',
+    'D9Q00041': 'Ellensburg',
+    'D9Q00043': 'St. Regis'
+}
 def read_excel_file(file) -> Tuple[Optional[pd.DataFrame], str]:
     """Read Excel file and return DataFrame with error handling."""
     try:
@@ -60,7 +75,10 @@ def pivot_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     
     # Reset index to make metrics names as a column
     pivot_df = pivot_df.reset_index()
-    pivot_df.columns = ['Metric'] + DEPOT_ORDER
+    
+    # Rename columns using the DEPOT_NAMES mapping
+    new_columns = ['Metric'] + [DEPOT_NAMES[depot] for depot in DEPOT_ORDER]
+    pivot_df.columns = new_columns
     
     return pivot_df
 
