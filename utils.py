@@ -24,13 +24,12 @@ def group_by_depot(df: pd.DataFrame) -> pd.DataFrame:
         raise ValueError(f"Missing required columns: {', '.join(missing_cols)}")
     
     grouped = df.groupby('Depot').agg({
-        'DeliveryCases': 'sum',  # Delivery Cases
-        'Depot': 'count',        # Routes
-        'TotalTime': 'sum',      # Delivery Hours
-        'OnTimePct': 'mean'      # On-Time %
+        'DeliveryCases': ['sum', 'count'],  # Delivery Cases and Routes
+        'TotalTime': 'sum',                 # Delivery Hours
+        'OnTimePct': 'mean'                 # On-Time %
     }).reset_index()
     
-    # Rename columns
+    # Flatten multi-level columns
     grouped.columns = ['Depot', 'Delivery_Cases', 'Routes', 'Delivery_Hours', 'On_Time_Pct']
     
     # Round On-Time percentage to nearest integer
