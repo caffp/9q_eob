@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
-from utils import read_excel_file, generate_download_link, group_by_depot, pivot_dataframe
+from utils import read_excel_file, generate_download_link, group_by_depot, pivot_dataframe, process_trailer_weights
 
 def main():
     # Page configuration
