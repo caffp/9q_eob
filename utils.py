@@ -82,6 +82,25 @@ def pivot_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     
     return pivot_df
 
+def process_trailer_weights(df: pd.DataFrame) -> pd.DataFrame:
+    """Process trailer weight data and calculate relevant metrics."""
+    if 'TrailerWeight' not in df.columns:
+        raise ValueError("TrailerWeight column not found in the dataset")
+    
+    trailer_stats = df.groupby('Depot').agg({
+        'TrailerWeight': ['mean', 'min', 'max', 'count']
+    }).reset_index()
+    
+    # Flatten multi-level columns
+    trailer_stats.columns = ['Depot', 'Average Weight', 'Min Weight', 'Max Weight', 'Total Trailers']
+    
+    # Round weight values to 2 decimal places
+    weight_cols = ['Average Weight', 'Min Weight', 'Max Weight']
+    for col in weight_cols:
+        trailer_stats[col] = trailer_stats[col].round(2)
+    
+    return trailer_stats
+
 def generate_download_link(df: pd.DataFrame, file_format: str) -> Tuple[bytes, str]:
     """Generate downloadable file in specified format."""
     if file_format == "csv":

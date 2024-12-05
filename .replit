@@ -33,13 +33,8 @@ waitForPort = 5000
 
 [deployment]
 deploymentTarget = "static"
-publicDir = "/"
-build = [
-  "sh",
-  "-c",
-  "streamlit run --server.address 0.0.0.0 --server.headless true --server.enableCORS=true --server.enableWebsocketCompression=false main.py",
-]
-run = ["sh", "-c", "streamlit run main.py --server.port 5000 --server.address 0.0.0.0 --server.headless true"]
+publicDir = "./"
+build = ["sh", "-c", "streamlit run main.py"]
 
 [[ports]]
 localPort = 5000

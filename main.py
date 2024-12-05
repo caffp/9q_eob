@@ -47,14 +47,43 @@ def main():
             st.success(f"File uploaded successfully: {uploaded_file.name}")
             
             try:
-                # First group the data
-                grouped_df = group_by_depot(df)
+                # Create tabs for different views
+                delivery_tab, trailer_tab = st.tabs(["Delivery Metrics", "Trailer Weights"])
                 
-                # Then pivot the grouped data
-                final_df = pivot_dataframe(grouped_df)
+                with delivery_tab:
+                    # First group the data
+                    grouped_df = group_by_depot(df)
+                    
+                    # Then pivot the grouped data
+                    final_df = pivot_dataframe(grouped_df)
+                    
+                    # Display metrics
+                    st.markdown("### Metrics by Depot")
                 
-                # Display metrics
-                st.markdown("### Metrics by Depot")
+                with trailer_tab:
+                    try:
+                        # Process trailer weights
+                        trailer_stats = process_trailer_weights(df)
+                        
+                        st.markdown("### Trailer Weight Analysis")
+                        
+                        # Display trailer weight metrics
+                        st.dataframe(trailer_stats, use_container_width=True)
+                        
+                        # Summary statistics for trailer weights
+                        st.markdown("### Trailer Weight Summary")
+                        summary_cols = st.columns(4)
+                        with summary_cols[0]:
+                            st.metric("Average Weight", f"{trailer_stats['Average Weight'].mean():.2f}")
+                        with summary_cols[1]:
+                            st.metric("Heaviest Trailer", f"{trailer_stats['Max Weight'].max():.2f}")
+                        with summary_cols[2]:
+                            st.metric("Lightest Trailer", f"{trailer_stats['Min Weight'].min():.2f}")
+                        with summary_cols[3]:
+                            st.metric("Total Trailers", int(trailer_stats['Total Trailers'].sum()))
+                            
+                    except ValueError as e:
+                        st.error("Trailer weight data not available in the uploaded file.")
                 # Format Delivery_Cases as integers
                 for col in final_df.columns:
                     if col != 'Metric':  # Skip the Metric column
