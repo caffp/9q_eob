@@ -63,18 +63,19 @@ def main():
                 with trailer_tab:
                     st.markdown('''
                     ### Trailer Weight Analysis
-                    This tab shows individual route weights when the input file contains ROUTE_ID, Description, and DeliveryWeight columns.
+                    This tab analyzes route-specific delivery weights. The input file must contain:
+                    - ROUTE_ID (Route identifier)
+                    - Description (Route description)
+                    - DeliveryWeight (Weight in specified units)
                     ''')
                     
                     try:
-                        # Process trailer weights
                         route_weights = process_trailer_weights(df)
-                        
-                        # Display route weight data
                         st.dataframe(route_weights, use_container_width=True)
                         
                     except ValueError as e:
-                        st.info("Please ensure the file contains ROUTE_ID, Description, and DeliveryWeight columns to view weight analysis.")
+                        st.warning(str(e))
+                        st.info("Please upload a file that contains the required columns to view the weight analysis.")
                 # Format Delivery_Cases as integers
                 for col in final_df.columns:
                     if col != 'Metric':  # Skip the Metric column

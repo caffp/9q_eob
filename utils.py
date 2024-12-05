@@ -92,15 +92,22 @@ def pivot_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 def process_trailer_weights(df: pd.DataFrame) -> pd.DataFrame:
     """Process trailer weight data and return individual route weights."""
-    if 'DeliveryWeight' not in df.columns or 'ROUTE_ID' not in df.columns or 'Description' not in df.columns:
-        raise ValueError("Required columns (ROUTE_ID, Description, DeliveryWeight) not found in the dataset")
+    missing_columns = []
+    required_columns = {
+        'ROUTE_ID': 'Route ID',
+        'Description': 'Route Description',
+        'DeliveryWeight': 'Delivery Weight'
+    }
     
-    # Select and return only required columns
+    for col, display_name in required_columns.items():
+        if col not in df.columns:
+            missing_columns.append(display_name)
+    
+    if missing_columns:
+        raise ValueError(f"Missing required columns: {', '.join(missing_columns)}")
+    
     route_weights = df[['ROUTE_ID', 'Description', 'DeliveryWeight']].copy()
-    
-    # Sort by ROUTE_ID for better readability
     route_weights = route_weights.sort_values('ROUTE_ID')
-    
     return route_weights
 
 
