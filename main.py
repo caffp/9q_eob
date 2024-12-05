@@ -22,7 +22,7 @@ def main():
         <h4>Instructions:</h4>
         <ol>
             <li>Upload your qryRouteSummary.xlsx file</li>
-            <li>View the processed metrics by depot</li>
+            <li>Toggle between Delivery Metrics and Trailer Weights</li>
             <li>Download the processed data in your preferred format</li>
         </ol>
     </div>
