@@ -63,30 +63,18 @@ def main():
                 with trailer_tab:
                     st.markdown('''
                     ### Trailer Weight Analysis
-                    This tab shows weight analysis when the input file contains a 'TrailerWeight' column.
+                    This tab shows individual route weights when the input file contains ROUTE_ID, Description, and DeliveryWeight columns.
                     ''')
                     
                     try:
                         # Process trailer weights
-                        trailer_stats = process_trailer_weights(df)
+                        route_weights = process_trailer_weights(df)
                         
-                        # Display trailer weight metrics
-                        st.dataframe(trailer_stats, use_container_width=True)
+                        # Display route weight data
+                        st.dataframe(route_weights, use_container_width=True)
                         
-                        # Summary statistics for trailer weights
-                        st.markdown("### Trailer Weight Summary")
-                        summary_cols = st.columns(4)
-                        with summary_cols[0]:
-                            st.metric("Average Weight", f"{trailer_stats['Average Weight'].mean():.2f}")
-                        with summary_cols[1]:
-                            st.metric("Heaviest Trailer", f"{trailer_stats['Max Weight'].max():.2f}")
-                        with summary_cols[2]:
-                            st.metric("Lightest Trailer", f"{trailer_stats['Min Weight'].min():.2f}")
-                        with summary_cols[3]:
-                            st.metric("Total Trailers", int(trailer_stats['Total Trailers'].sum()))
-                            
                     except ValueError as e:
-                        st.info("This file doesn't contain trailer weight data. Please upload a file with a 'TrailerWeight' column to view weight analysis.")
+                        st.info("Please ensure the file contains ROUTE_ID, Description, and DeliveryWeight columns to view weight analysis.")
                 # Format Delivery_Cases as integers
                 for col in final_df.columns:
                     if col != 'Metric':  # Skip the Metric column
