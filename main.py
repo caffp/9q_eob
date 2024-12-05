@@ -99,7 +99,7 @@ def main():
                                 st.download_button(
                                     label="Click to Download",
                                     data=file_content,
-                                    file_name=f"umos_{current_date}.{delivery_format}",
+                                    file_name=f"umos_{current_date}.{'xlsx' if delivery_format == 'excel' else 'csv'}",
                                     mime=mime_type
                                 )
                             except Exception as e:
@@ -139,7 +139,7 @@ def main():
                                     st.download_button(
                                         label="Click to Download",
                                         data=file_content,
-                                        file_name=f"trailer_weights_{current_date}.{trailer_format}",
+                                        file_name=f"trailer_weights_{current_date}.{'xlsx' if trailer_format == 'excel' else 'csv'}",
                                         mime=mime_type
                                     )
                                 except Exception as e:
