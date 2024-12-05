@@ -57,8 +57,26 @@ def main():
                     # Then pivot the grouped data
                     final_df = pivot_dataframe(grouped_df)
                     
+                    # Format Delivery_Cases as integers
+                    for col in final_df.columns:
+                        if col != 'Metric':  # Skip the Metric column
+                            final_df.loc[final_df['Metric'] == 'Delivery Cases', col] = final_df.loc[final_df['Metric'] == 'Delivery Cases', col].astype(int)
+                    
                     # Display metrics
                     st.markdown("### Metrics by Depot")
+                    st.dataframe(final_df, use_container_width=True)
+                    
+                    # Display summary statistics
+                    st.markdown("### Summary Statistics")
+                    summary_cols = st.columns(4)
+                    with summary_cols[0]:
+                        st.metric("Total Routes", int(grouped_df['Routes'].sum()))
+                    with summary_cols[1]:
+                        st.metric("Total Delivery Cases", f"{int(grouped_df['Delivery Cases'].sum())}")
+                    with summary_cols[2]:
+                        st.metric("Average On-Time %", f"{round(grouped_df['On-time %'].mean())}%")
+                    with summary_cols[3]:
+                        st.metric("Total Delivery Hours", f"{grouped_df['Delivery Hours'].sum():.2f}")
                 
                 with trailer_tab:
                     st.markdown('''
@@ -76,23 +94,6 @@ def main():
                     except ValueError as e:
                         st.warning(str(e))
                         st.info("Please upload a file that contains the required columns to view the weight analysis.")
-                # Format Delivery_Cases as integers
-                for col in final_df.columns:
-                    if col != 'Metric':  # Skip the Metric column
-                        final_df.loc[final_df['Metric'] == 'Delivery Cases', col] = final_df.loc[final_df['Metric'] == 'Delivery Cases', col].astype(int)
-                st.dataframe(final_df, use_container_width=True)
-                
-                # Display summary statistics
-                st.markdown("### Summary Statistics")
-                summary_cols = st.columns(4)
-                with summary_cols[0]:
-                    st.metric("Total Routes", int(grouped_df['Routes'].sum()))
-                with summary_cols[1]:
-                    st.metric("Total Delivery Cases", f"{int(grouped_df['Delivery Cases'].sum())}")
-                with summary_cols[2]:
-                    st.metric("Average On-Time %", f"{round(grouped_df['On-time %'].mean())}%")
-                with summary_cols[3]:
-                    st.metric("Total Delivery Hours", f"{grouped_df['Delivery Hours'].sum():.2f}")
                 
                 # Download section
                 st.subheader("Download Processed Data")
