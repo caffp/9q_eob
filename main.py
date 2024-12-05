@@ -61,11 +61,14 @@ def main():
                     st.markdown("### Metrics by Depot")
                 
                 with trailer_tab:
+                    st.markdown('''
+                    ### Trailer Weight Analysis
+                    This tab shows weight analysis when the input file contains a 'TrailerWeight' column.
+                    ''')
+                    
                     try:
                         # Process trailer weights
                         trailer_stats = process_trailer_weights(df)
-                        
-                        st.markdown("### Trailer Weight Analysis")
                         
                         # Display trailer weight metrics
                         st.dataframe(trailer_stats, use_container_width=True)
@@ -83,7 +86,7 @@ def main():
                             st.metric("Total Trailers", int(trailer_stats['Total Trailers'].sum()))
                             
                     except ValueError as e:
-                        st.error("Trailer weight data not available in the uploaded file.")
+                        st.info("This file doesn't contain trailer weight data. Please upload a file with a 'TrailerWeight' column to view weight analysis.")
                 # Format Delivery_Cases as integers
                 for col in final_df.columns:
                     if col != 'Metric':  # Skip the Metric column
