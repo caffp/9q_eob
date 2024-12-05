@@ -77,6 +77,33 @@ def main():
                         st.metric("Average On-Time %", f"{round(grouped_df['On-time %'].mean())}%")
                     with summary_cols[3]:
                         st.metric("Total Delivery Hours", f"{grouped_df['Delivery Hours'].sum():.2f}")
+                    
+                    # Download section for delivery metrics
+                    st.subheader("Download Delivery Metrics")
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        delivery_format = st.selectbox(
+                            "Select output format",
+                            options=["csv", "excel"],
+                            index=0,
+                            key="delivery_format"
+                        )
+                    with col2:
+                        if st.button("Download Delivery Metrics"):
+                            try:
+                                file_content, mime_type = generate_download_link(
+                                    final_df,
+                                    delivery_format
+                                )
+                                current_date = datetime.now().strftime("%m%d%y")
+                                st.download_button(
+                                    label="Click to Download",
+                                    data=file_content,
+                                    file_name=f"umos_delivery_metrics_{current_date}.{delivery_format}",
+                                    mime=mime_type
+                                )
+                            except Exception as e:
+                                st.error(f"Error generating download: {str(e)}")
                 
                 with trailer_tab:
                     st.markdown('''
@@ -91,40 +118,36 @@ def main():
                         route_weights = process_trailer_weights(df)
                         st.dataframe(route_weights, use_container_width=True)
                         
+                        # Download section for trailer weights
+                        st.subheader("Download Trailer Weights")
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            trailer_format = st.selectbox(
+                                "Select output format",
+                                options=["csv", "excel"],
+                                index=0,
+                                key="trailer_format"
+                            )
+                        with col2:
+                            if st.button("Download Trailer Weights"):
+                                try:
+                                    file_content, mime_type = generate_download_link(
+                                        route_weights,
+                                        trailer_format
+                                    )
+                                    current_date = datetime.now().strftime("%m%d%y")
+                                    st.download_button(
+                                        label="Click to Download",
+                                        data=file_content,
+                                        file_name=f"umos_trailer_weights_{current_date}.{trailer_format}",
+                                        mime=mime_type
+                                    )
+                                except Exception as e:
+                                    st.error(f"Error generating download: {str(e)}")
+                        
                     except ValueError as e:
                         st.warning(str(e))
                         st.info("Please upload a file that contains the required columns to view the weight analysis.")
-                
-                # Download section
-                st.subheader("Download Processed Data")
-                col1, col2 = st.columns(2)
-                
-                with col1:
-                    file_format = st.selectbox(
-                        "Select output format",
-                        options=["csv", "excel"],
-                        index=0
-                    )
-
-                with col2:
-                    if st.button("Download Processed Data"):
-                        try:
-                            # Use the pivoted data for download
-                            file_content, mime_type = generate_download_link(
-                                final_df,
-                                file_format
-                            )
-                            
-                            # Generate filename with current date
-                            current_date = datetime.now().strftime("%Y-%m-%d")
-                            st.download_button(
-                                label="Click to Download",
-                                data=file_content,
-                                file_name=f"UMOS_Data_{current_date}.{file_format}",
-                                mime=mime_type
-                            )
-                        except Exception as e:
-                            st.error(f"Error generating download: {str(e)}")
                 
             except ValueError as e:
                 st.error(str(e))
