@@ -95,7 +95,7 @@ def process_trailer_weights(df: pd.DataFrame) -> pd.DataFrame:
     missing_columns = []
     required_columns = {
         'ROUTE_ID': 'Route ID',
-        'Description': 'Route Description',
+        'DESCRIPTION': 'Route Description',
         'DeliveryWeight': 'Delivery Weight'
     }
     
@@ -106,7 +106,7 @@ def process_trailer_weights(df: pd.DataFrame) -> pd.DataFrame:
     if missing_columns:
         raise ValueError(f"Missing required columns: {', '.join(missing_columns)}")
     
-    route_weights = df[['ROUTE_ID', 'Description', 'DeliveryWeight']].copy()
+    route_weights = df[['ROUTE_ID', 'DESCRIPTION', 'DeliveryWeight']].copy()
     route_weights = route_weights.sort_values('ROUTE_ID')
     return route_weights
 

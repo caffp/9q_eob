@@ -65,7 +65,7 @@ def main():
                     ### Trailer Weight Analysis
                     This tab analyzes route-specific delivery weights. The input file must contain:
                     - ROUTE_ID (Route identifier)
-                    - Description (Route description)
+                    - DESCRIPTION (Route description)
                     - DeliveryWeight (Weight in specified units)
                     ''')
                     
