@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
-from utils import read_excel_file, generate_download_link, group_by_depot, pivot_dataframe, process_trailer_weights
+from utils import read_excel_file, generate_download_link, group_by_depot, pivot_dataframe, process_trailer_weights, get_session_date
 
 def main():
     # Page configuration
@@ -95,11 +95,11 @@ def main():
                                     final_df,
                                     delivery_format
                                 )
-                                current_date = datetime.now().strftime("%m_%d_%Y")
+                                session_date = get_session_date(df)
                                 st.download_button(
                                     label="Click to Download",
                                     data=file_content,
-                                    file_name=f"umos_{current_date}.{delivery_format}",
+                                    file_name=f"umos_{session_date}.{delivery_format}",
                                     mime=mime_type
                                 )
                             except Exception as e:
@@ -135,11 +135,11 @@ def main():
                                         route_weights,
                                         trailer_format
                                     )
-                                    current_date = datetime.now().strftime("%m_%d_%Y")
+                                    session_date = get_session_date(df)
                                     st.download_button(
                                         label="Click to Download",
                                         data=file_content,
-                                        file_name=f"trailer_weights_{current_date}.{trailer_format}",
+                                        file_name=f"trailer_weights_{session_date}.{trailer_format}",
                                         mime=mime_type
                                     )
                                 except Exception as e:

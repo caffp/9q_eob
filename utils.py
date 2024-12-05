@@ -90,6 +90,13 @@ def pivot_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     return pivot_df
 
 
+def get_session_date(df: pd.DataFrame) -> str:
+    if 'SessionDate' not in df.columns:
+        raise ValueError("SessionDate column not found in the dataset")
+    # Get the first session date since all rows should have the same date
+    session_date = pd.to_datetime(df['SessionDate'].iloc[0])
+    return session_date.strftime("%m_%d_%Y")
+
 def process_trailer_weights(df: pd.DataFrame) -> pd.DataFrame:
     """Process trailer weight data and return individual route weights."""
     missing_columns = []
