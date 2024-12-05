@@ -6,7 +6,7 @@ from utils import read_excel_file, generate_download_link, group_by_depot, pivot
 def main():
     # Page configuration
     st.set_page_config(
-        page_title="UMOS Data Processor",
+        page_title="9Q Routing EOB",
         page_icon="📊",
         layout="wide"
     )
@@ -16,7 +16,7 @@ def main():
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
     # Title and description
-    st.title("📊 UMOS Data Processor")
+    st.title("📊 9Q Routing EOB")
     st.markdown("""
     <div class="instructions">
         <h4>Instructions:</h4>
