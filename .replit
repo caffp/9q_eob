@@ -10,6 +10,7 @@ runButton = "Project"
 name = "Project"
 mode = "parallel"
 author = "agent"
+run = "python main.py"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
@@ -32,9 +33,16 @@ waitForPort = 5000
 
 [deployment]
 deploymentTarget = "static"
-publicDir = "umos"
-run = ["sh", "-c", "streamlit run main.py --server.port 5000"]
+publicDir = "/"
+build = [
+  "sh",
+  "-c",
+  "streamlit run --server.address 0.0.0.0 --server.headless true --server.enableCORS=true --server.enableWebsocketCompression=false main.py",
+]
 
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[env]
+REPLIT_DISABLE_PACKAGE_LAYER = "1"
