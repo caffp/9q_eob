@@ -91,7 +91,7 @@ def pivot_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def process_trailer_weights(df: pd.DataFrame) -> pd.DataFrame:
-    """Process trailer weight data and return individual route weights."""
+    """Process trailer weight data and format in landscape-friendly layout."""
     missing_columns = []
     required_columns = {
         'ROUTE_ID': 'Route ID',
@@ -106,9 +106,33 @@ def process_trailer_weights(df: pd.DataFrame) -> pd.DataFrame:
     if missing_columns:
         raise ValueError(f"Missing required columns: {', '.join(missing_columns)}")
     
+    # Get initial route weights
     route_weights = df[['ROUTE_ID', 'DESCRIPTION', 'DeliveryWeight']].copy()
     route_weights = route_weights.sort_values('ROUTE_ID')
-    return route_weights
+    
+    # Calculate the midpoint
+    total_rows = len(route_weights)
+    mid_point = (total_rows + 1) // 2
+    
+    # Split the data
+    first_half = route_weights.iloc[:mid_point].copy()
+    second_half = route_weights.iloc[mid_point:].copy()
+    
+    # Rename columns for second half to avoid conflicts
+    second_half.columns = ['ROUTE_ID_2', 'DESCRIPTION_2', 'DeliveryWeight_2']
+    
+    # Create empty row DataFrame
+    empty_row = pd.DataFrame([[None, None, None]], 
+                           columns=['ROUTE_ID_2', 'DESCRIPTION_2', 'DeliveryWeight_2'])
+    
+    # Align the dataframes side by side with padding
+    first_half_padded = first_half.reindex(range(max(len(first_half), len(second_half))))
+    second_half_padded = second_half.reindex(range(max(len(first_half), len(second_half))))
+    
+    # Combine the halves horizontally
+    result = pd.concat([first_half_padded, empty_row, second_half_padded], axis=1)
+    
+    return result
 
 
 def generate_download_link(df: pd.DataFrame,

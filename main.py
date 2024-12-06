@@ -116,7 +116,14 @@ def main():
                     
                     try:
                         route_weights = process_trailer_weights(df)
-                        st.dataframe(route_weights, use_container_width=True)
+                        
+                        # Customize the display to show a more readable format
+                        st.markdown("### Route Weights Analysis")
+                        st.dataframe(
+                            route_weights,
+                            use_container_width=True,
+                            height=600  # Adjust height as needed
+                        )
                         
                         # Download section for trailer weights
                         st.subheader("Download Trailer Weights")
