@@ -121,9 +121,11 @@ def process_trailer_weights(df: pd.DataFrame) -> pd.DataFrame:
     # Rename columns for second half to avoid conflicts
     second_half.columns = ['ROUTE_ID_2', 'DESCRIPTION_2', 'DeliveryWeight_2']
     
-    # Create empty row DataFrame
-    empty_row = pd.DataFrame([[None, None, None]], 
-                           columns=['ROUTE_ID_2', 'DESCRIPTION_2', 'DeliveryWeight_2'])
+    # Create empty row DataFrame with unique column names
+    empty_row = pd.DataFrame(
+        [[None, None, None]], 
+        columns=['Empty_ROUTE_ID', 'Empty_DESCRIPTION', 'Empty_DeliveryWeight']
+    )
     
     # Align the dataframes side by side with padding
     first_half_padded = first_half.reindex(range(max(len(first_half), len(second_half))))
