@@ -111,16 +111,30 @@ def process_trailer_weights(df: pd.DataFrame) -> pd.DataFrame:
     return route_weights
 
 
-def generate_download_link(df: pd.DataFrame,
-                           file_format: str) -> Tuple[bytes, str]:
-    """Generate downloadable file in specified format."""
+def generate_download_link(df: pd.DataFrame, file_format: str) -> Tuple[bytes, str]:
+    """Generate downloadable file in specified format with side-by-side layout for Excel."""
     if file_format == "csv":
         output = df.to_csv(index=False)
         return output.encode(), "text/csv"
     elif file_format == "excel":
         output = io.BytesIO()
-        df.to_excel(output, index=False)
-        return output.getvalue(
-        ), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        
+        # Create Excel writer
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            # Calculate split point (excluding header)
+            total_rows = len(df)
+            mid_point = (total_rows + 1) // 2
+            
+            # Split dataframe
+            df1 = df.iloc[:mid_point]
+            df2 = df.iloc[mid_point:]
+            
+            # Write first half
+            df1.to_excel(writer, index=False, startrow=0, startcol=0)
+            
+            # Write second half
+            df2.to_excel(writer, index=False, startrow=0, startcol=4)
+        
+        return output.getvalue(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     else:
         raise ValueError("Unsupported file format")
