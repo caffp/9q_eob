@@ -121,19 +121,19 @@ def generate_download_link(df: pd.DataFrame, file_format: str) -> Tuple[bytes, s
         
         # Create Excel writer
         with pd.ExcelWriter(output, engine='openpyxl') as writer:
-            # Calculate split point (excluding header)
+            # Calculate split point
             total_rows = len(df)
-            mid_point = (total_rows + 1) // 2
+            mid_point = total_rows // 2
             
             # Split dataframe
             df1 = df.iloc[:mid_point]
             df2 = df.iloc[mid_point:]
             
-            # Write first half
+            # Write first half (including headers)
             df1.to_excel(writer, index=False, startrow=0, startcol=0)
             
-            # Write second half
-            df2.to_excel(writer, index=False, startrow=0, startcol=4)
+            # Write second half (starting at row 2, column E)
+            df2.to_excel(writer, index=False, startrow=1, startcol=4, header=False)
         
         return output.getvalue(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     else:
